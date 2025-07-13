@@ -1,0 +1,598 @@
+{% extends 'hospital/base.html' %}
+
+{% block title %}Contacto - Hospital San Rafael{% endblock %}
+
+{% block content %}
+<div class="contact-header">
+    <h1><i class="fas fa-envelope"></i> Contáctanos</h1>
+    <p>Estamos aquí para ayudarte. Envíanos tu consulta y te responderemos pronto</p>
+</div>
+
+<div class="contact-info-grid">
+    <div class="info-card">
+        <div class="info-icon phone">
+            <i class="fas fa-phone"></i>
+        </div>
+        <div class="info-details">
+            <h3>Teléfono</h3>
+            <p>+1 (555) 123-4567</p>
+            <p>Lun - Vie: 8:00 - 18:00</p>
+        </div>
+    </div>
+
+    <div class="info-card">
+        <div class="info-icon email">
+            <i class="fas fa-envelope"></i>
+        </div>
+        <div class="info-details">
+            <h3>Email</h3>
+            <p>contacto@hospitalsanrafael.com</p>
+            <p>Respuesta en 24 horas</p>
+        </div>
+    </div>
+
+    <div class="info-card">
+        <div class="info-icon location">
+            <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <div class="info-details">
+            <h3>Ubicación</h3>
+            <p>Av. Principal 123</p>
+            <p>Ciudad, País</p>
+        </div>
+    </div>
+</div>
+
+<div class="contact-form-section">
+    <div class="form-header">
+        <h2><i class="fas fa-paper-plane"></i> Envíanos tu mensaje</h2>
+    </div>
+    <div class="form-container">
+        <!-- Alert inline para mensajes -->
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <i
+                class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">Nombre completo <span class="required">*</span></label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo electrónico <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" id="telefono" name="telefono">
+                </div>
+                <div class="form-group">
+                    <label for="asunto">Asunto <span class="required">*</span></label>
+                    <select id="asunto" name="asunto" required>
+                        <option value="">Selecciona un asunto</option>
+                        <option value="consulta_general">Consulta General</option>
+                        <option value="cita_medica">Solicitud de Cita Médica</option>
+                        <option value="informacion_servicios">Información sobre Servicios</option>
+                        <option value="emergencia">Emergencia</option>
+                        <option value="sugerencia">Sugerencia</option>
+                        <option value="queja">Queja</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="mensaje">Mensaje <span class="required">*</span></label>
+                <textarea id="mensaje" name="mensaje" placeholder="Escribe tu mensaje aquí..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-paper-plane"></i> Enviar Mensaje
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para mensajes del backend -->
+{% if mensaje %}
+<div class="modal-overlay" id="messageModal" data-modal-type="{{ modal_type|default:'info' }}">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>
+                <i
+                    class="fas {% if modal_type == 'success' %}fa-check-circle text-success{% elif modal_type == 'error' %}fa-exclamation-triangle text-error{% elif modal_type == 'warning' %}fa-exclamation-circle text-warning{% else %}fa-info-circle text-info{% endif %}"></i>
+                {% if modal_type == 'success' %}¡Éxito!{% elif modal_type == 'error' %}Error{% elif modal_type == 'warning' %}Advertencia{% else %}Información{% endif %}
+            </h3>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>{{ mensaje }}</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-modal btn-primary" onclick="closeModal()">Entendido</button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .contact-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: #2c5aa0;
+    }
+
+    .contact-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .contact-header p {
+        color: #6c757d;
+        font-size: 1.1rem;
+    }
+
+    .contact-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .info-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: transform 0.3s;
+    }
+
+    .info-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .info-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .info-icon.phone {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .info-icon.email {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .info-icon.location {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .info-details h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2c5aa0;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-details p {
+        color: #6c757d;
+        margin: 0;
+    }
+
+    .contact-form-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .form-header h2 {
+        color: #2c5aa0;
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+    .form-container {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #495057;
+        font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #2c5aa0;
+        box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .required {
+        color: #dc3545;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%);
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+        width: 100%;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(44, 90, 160, 0.3);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    /* Alertas inline */
+    .alert {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        border: 1px solid;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border-color: #c3e6cb;
+    }
+
+    .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border-color: #f5c6cb;
+    }
+
+    .alert-warning {
+        background: #fff3cd;
+        color: #856404;
+        border-color: #ffeaa7;
+    }
+
+    .alert-info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border-color: #bee5eb;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow: hidden;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    .modal-header {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        color: #2c5aa0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #6c757d;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color 0.3s;
+    }
+
+    .modal-close:hover {
+        background-color: #e9ecef;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .modal-body p {
+        margin: 0;
+        line-height: 1.6;
+        color: #495057;
+    }
+
+    .modal-footer {
+        background: #f8f9fa;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e9ecef;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+    }
+
+    .btn-modal {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+
+    .btn-primary {
+        background: #2c5aa0;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #1e3a8a;
+    }
+
+    /* Colores para iconos del modal */
+    .text-success {
+        color: #28a745;
+    }
+
+    .text-error {
+        color: #dc3545;
+    }
+
+    .text-warning {
+        color: #ffc107;
+    }
+
+    .text-info {
+        color: #17a2b8;
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .contact-header h1 {
+            font-size: 2rem;
+        }
+
+        .contact-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .form-container {
+            padding: 1.5rem;
+        }
+
+        .modal-content {
+            width: 95%;
+            margin: 1rem;
+        }
+
+        .modal-header,
+        .modal-body,
+        .modal-footer {
+            padding: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .contact-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .info-card {
+            padding: 1rem;
+        }
+
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Validación en tiempo real
+    const requiredFields = document.querySelectorAll('input[required], select[required], textarea[required]');
+
+    requiredFields.forEach(field => {
+        field.addEventListener('blur', function () {
+            if (!this.value.trim()) {
+                this.style.borderColor = '#dc3545';
+            } else {
+                this.style.borderColor = '#28a745';
+            }
+        });
+    });
+
+    // Validación de email
+    const emailField = document.getElementById('email');
+    emailField.addEventListener('blur', function () {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (this.value && !emailRegex.test(this.value)) {
+            this.style.borderColor = '#dc3545';
+        } else if (this.value) {
+            this.style.borderColor = '#28a745';
+        }
+    });
+
+    // Loading state en el botón
+    document.querySelector('form').addEventListener('submit', function () {
+        const submitBtn = document.querySelector('.btn-submit');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+        submitBtn.disabled = true;
+    });
+
+    // Funciones del modal
+    function closeModal() {
+        const modal = document.getElementById('messageModal');
+        if (modal) {
+            modal.style.animation = 'fadeOut 0.3s ease-out';
+            setTimeout(() => {
+                modal.remove();
+            }, 300);
+        }
+    }
+
+    // Cerrar modal con ESC
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // Cerrar modal al hacer clic fuera
+    document.addEventListener('click', function (e) {
+        const modal = document.getElementById('messageModal');
+        if (modal && e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Auto-cerrar modal después de 5 segundos para mensajes de éxito
+    // Usamos data attribute en lugar de código Django en JavaScript
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('messageModal');
+        if (modal && modal.dataset.modalType === 'success') {
+            setTimeout(() => {
+                closeModal();
+            }, 5000);
+        }
+    });
+</script>
+{% endblock %}

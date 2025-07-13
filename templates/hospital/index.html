@@ -1,0 +1,146 @@
+{% extends 'hospital/base.html' %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h2>Bienvenido al Sistema de Atención al Paciente</h2>
+        <p>Nuestro asistente virtual está disponible 24/7 para ayudarte con:</p>
+        <ul class="services-list">
+            <li><i class="fas fa-user-md"></i> Información sobre especialidades</li>
+            <li><i class="fas fa-clock"></i> Horarios de atención</li>
+            <li><i class="fas fa-phone"></i> Contacto y ubicación</li>
+        </ul>
+        <div class="cta-buttons">
+            <a href="{% url 'hospital:chat' %}" class="btn btn-primary">
+                <i class="fas fa-comments"></i> Iniciar Conversación
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="info-cards">
+    <div class="card">
+        <div class="card-icon">
+            <i class="fas fa-robot"></i>
+        </div>
+        <h3>Asistente Inteligente</h3>
+        <p>Nuestro chatbot utiliza inteligencia artificial para brindarte respuestas precisas y ayudarte en tiempo real.</p>
+    </div>
+    
+    <div class="card">
+        <div class="card-icon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3>Información Segura</h3>
+        <p>Todos tus datos están protegidos con los más altos estándares de seguridad y privacidad médica.</p>
+    </div>
+    
+    <div class="card">
+        <div class="card-icon">
+            <i class="fas fa-clock"></i>
+        </div>
+        <h3>Disponible 24/7</h3>
+        <p>Accede a nuestros servicios en cualquier momento del día, los 365 días del año.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 2rem;
+        border-radius: 16px;
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+
+    .hero-content h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .hero-content p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    .services-list {
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin: 2rem 0;
+        text-align: left;
+    }
+
+    .services-list li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.1rem;
+        padding: 0.5rem;
+    }
+
+    .services-list i {
+        color: #ffd700;
+        font-size: 1.2rem;
+    }
+
+    .cta-buttons {
+        margin-top: 2rem;
+    }
+
+    .btn-primary {
+        background: #28a745;
+        font-size: 1.2rem;
+        padding: 15px 30px;
+    }
+
+    .btn-primary:hover {
+        background: #218838;
+    }
+
+    .info-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .info-cards .card {
+        text-align: center;
+        transition: transform 0.3s;
+    }
+
+    .info-cards .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-icon {
+        font-size: 3rem;
+        color: #2c5aa0;
+        margin-bottom: 1rem;
+    }
+
+    .info-cards h3 {
+        color: #2c5aa0;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .hero-content h2 {
+            font-size: 2rem;
+        }
+        
+        .services-list {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
